@@ -1,46 +1,72 @@
 package empresa;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class HillClimbing {
-	
-	public static void main(String [] args) {
-		//Criando uma lista de empressas com pontuações aleatorias 
-		List<Empresas> empresas = new ArrayList<>();
-		empresas.add(new Empresas("Empresa A", 6));
-		empresas.add(new Empresas("Empresa B", 10));
-		empresas.add(new Empresas("Empresa C", 4));
-		empresas.add(new Empresas("Empresa D", 8));
-		empresas.add(new Empresas("Empresa E", 9));
-		
-		//Configuração inicial
-		int maxIteration = 100;
-		int iteration = 0;
-		int currentScore = 0;
-		
-		//Seleciona uma Empresa aleatoria para comerçar 
-		Empresas empresaAtual = empresas.get((int) (Math.random() * empresas.size()));
-		
-		//execução do algoritimo
-		while(iteration < maxIteration) {
-			
-			currentScore = empresaAtual.getScore();
-			
-			Empresas novaEmpresa = empresas.get((int) (Math.random() * empresas.size()));
-			
-			int newScore = novaEmpresa.getScore();
-			
-			if(newScore > currentScore) {
-				empresaAtual = novaEmpresa;
-			}
-			
-			iteration++;
+	public static void main(String[] args) {
+
+		final int MAX_ITERATIONS = 50;
+		final Random RANDOM = new Random();
+		List<Empresa> empresas = new ArrayList<>();
+
+		for (int i = 0; i < MAX_ITERATIONS; i++) {
+			empresas.add(new Empresa("Empresa " + (i + 1), RANDOM.nextDouble() * 100, RANDOM.nextDouble() * 100,
+					RANDOM.nextInt(100) + 1));
 		}
-		
-		System.out.println("Melhor opção para co-branding é a " + empresaAtual.getName());
+
+		Empresa melhor = hillClimbing(empresas, 3);
+
+		// System.out.println("TODAS AS EMPRESAS: \n\n" + empresas.toString() + "\n\n");
+		System.out.println("EMPRESA COM MELHOR DESEMPENHO: \n\n" +
+				melhor.toString());
+
 	}
-	
-	
+
+	public static Empresa hillClimbing(List<Empresa> empresas, int pontoInicial) {
+		Empresa atual = empresas.get(pontoInicial);
+		double atualDesempenho = atual.getDesempenho();
+
+		while (true) {
+			for (int i = pontoInicial + 1; i < empresas.size(); i++) {
+				if (empresas.get(i).getDesempenho() > atualDesempenho) {
+					atual = empresas.get(i);
+					atualDesempenho = atual.getDesempenho();
+				} else {
+					// método opcional para mostrar o gráfico
+					getGrafico(empresas, pontoInicial, i - 1);
+					return atual;
+				}
+			}
+		}
+	}
+
+	public static void getGrafico(List<Empresa> empresas, int pontoInicial, int maximoLocal) {
+		String bars[] = new String[empresas.size()];
+		Arrays.fill(bars, "");
+
+		for (int i = 0; i < empresas.size(); i++) {
+			int valorDesempenho = (int) empresas.get(i).getDesempenho();
+			bars[i] = "Empresa "+i+" | ";
+			for (int j = 0; j < valorDesempenho; j++) {
+				bars[i] += "░";
+			}
+		}
+		String newBar = bars[pontoInicial];
+		newBar = newBar.replaceAll("░", "▓");
+		newBar += " <= Ponto Inicial";
+		bars[pontoInicial] = newBar;
+
+		newBar = bars[maximoLocal];
+		newBar = newBar.replaceAll("░", "█");
+		newBar += " <= MÁXIMO LOCAL";
+		bars[maximoLocal] = newBar;
+
+		for (int i = 0; i < bars.length; i++) {
+			System.out.println(bars[i]);
+		}
+	}
 
 }
