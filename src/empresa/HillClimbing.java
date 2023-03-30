@@ -26,21 +26,26 @@ public class HillClimbing {
 	}
 
 	public static Empresa hillClimbing(List<Empresa> empresas, int pontoInicial) {
-		Empresa atual = empresas.get(pontoInicial);
-		double atualDesempenho = atual.getDesempenho();
+		Empresa melhorEmpresa = empresas.get(pontoInicial);
 
 		while (true) {
-			for (int i = pontoInicial + 1; i < empresas.size(); i++) {
-				if (empresas.get(i).getDesempenho() > atualDesempenho) {
-					atual = empresas.get(i);
-					atualDesempenho = atual.getDesempenho();
+			for (int i = pontoInicial; i < empresas.size(); i++) {
+				Empresa empresaAtual = empresas.get(i);				
+				if (isBetterThanNeighbors(empresaAtual, i == 0 ? null : empresas.get(i - 1),
+						i == empresas.size() - 1 ? null : empresas.get(i + 1))) {
+					melhorEmpresa = empresaAtual;
 				} else {
 					// método opcional para mostrar o gráfico
 					getGrafico(empresas, pontoInicial, i - 1);
-					return atual;
+					return melhorEmpresa;
 				}
 			}
 		}
+	}
+
+	private static boolean isBetterThanNeighbors(Empresa empresaAtual, Empresa previous, Empresa next) {
+		return empresaAtual.getDesempenho() > previous.getDesempenho()
+				&& empresaAtual.getDesempenho() > next.getDesempenho();
 	}
 
 	public static void getGrafico(List<Empresa> empresas, int pontoInicial, int maximoLocal) {
@@ -49,7 +54,7 @@ public class HillClimbing {
 
 		for (int i = 0; i < empresas.size(); i++) {
 			int valorDesempenho = (int) empresas.get(i).getDesempenho();
-			bars[i] = "Empresa "+i+" | ";
+			bars[i] = "Empresa " + i + " | ";
 			for (int j = 0; j < valorDesempenho; j++) {
 				bars[i] += "░";
 			}
