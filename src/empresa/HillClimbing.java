@@ -8,19 +8,24 @@ import java.util.Random;
 public class HillClimbing {
 	public static void main(String[] args) {
 
-		final int MAX_ITERATIONS = 50;
 		final Random RANDOM = new Random();
 		List<Empresa> empresas = new ArrayList<>();
 
-		for (int i = 0; i < MAX_ITERATIONS; i++) {
+		final int MAX_EMPRESAS = 50;
+		final int PONTO_INICIAL = RANDOM.nextInt(MAX_EMPRESAS);
+		
+		for (int i = 0; i < MAX_EMPRESAS; i++) {
 			empresas.add(new Empresa("Empresa " + (i + 1), RANDOM.nextDouble() * 100, RANDOM.nextDouble() * 100,
 					RANDOM.nextInt(100) + 1));
 		}
 
-		Empresa melhor = hillClimbing(empresas, 3);
-
-		// System.out.println("TODAS AS EMPRESAS: \n\n" + empresas.toString() + "\n\n");
-		System.out.println("EMPRESA COM MELHOR DESEMPENHO: \n\n" +
+		Empresa melhor = hillClimbing(empresas, PONTO_INICIAL);
+		
+		System.out.println("*** GRÁFICO DE DESEMPENHO ***\n");
+		getGrafico(empresas, PONTO_INICIAL, empresas.indexOf(melhor));
+		System.out.println("\nPONTO INICIAL => "+(PONTO_INICIAL+1));
+		System.out.println("MAXIMO LOCAL => " + (empresas.indexOf(melhor) + 1));
+		System.out.println("\nEMPRESA COM MELHOR DESEMPENHO: \n" +
 				melhor.toString());
 
 	}
@@ -29,15 +34,25 @@ public class HillClimbing {
 		Empresa atual = empresas.get(pontoInicial);
 		double atualDesempenho = atual.getDesempenho();
 
+		boolean caminharDireita = caminharDireita(empresas, pontoInicial);
 		while (true) {
-			for (int i = pontoInicial + 1; i < empresas.size(); i++) {
-				if (empresas.get(i).getDesempenho() > atualDesempenho) {
-					atual = empresas.get(i);
-					atualDesempenho = atual.getDesempenho();
-				} else {
-					// método opcional para mostrar o gráfico
-					getGrafico(empresas, pontoInicial, i - 1);
-					return atual;
+			if (caminharDireita) {
+				for (int i = pontoInicial + 1; i < empresas.size(); i++) {
+					if (empresas.get(i).getDesempenho() > atualDesempenho) {
+						atual = empresas.get(i);
+						atualDesempenho = atual.getDesempenho();
+					} else {
+						return atual;
+					}
+				}
+			} else {
+				for (int i = pontoInicial - 1; i >= 0; i--) {
+					if (empresas.get(i).getDesempenho() > atualDesempenho) {
+						atual = empresas.get(i);
+						atualDesempenho = atual.getDesempenho();
+					} else {
+						return atual;
+					}
 				}
 			}
 		}
@@ -49,7 +64,7 @@ public class HillClimbing {
 
 		for (int i = 0; i < empresas.size(); i++) {
 			int valorDesempenho = (int) empresas.get(i).getDesempenho();
-			bars[i] = "Empresa "+i+" | ";
+			bars[i] = empresas.get(i).getName() + " | ";
 			for (int j = 0; j < valorDesempenho; j++) {
 				bars[i] += "░";
 			}
@@ -69,4 +84,16 @@ public class HillClimbing {
 		}
 	}
 
+	private static boolean caminharDireita(List<Empresa> empresas, int pontoInicial) {
+
+		if (pontoInicial == 0) {
+			return true;
+		} else if (pontoInicial == empresas.size() - 1) {
+			return false;
+		} else if (empresas.get(pontoInicial + 1).getDesempenho() > empresas.get(pontoInicial - 1).getDesempenho()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
