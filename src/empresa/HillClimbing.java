@@ -17,7 +17,7 @@ public class HillClimbing {
 					RANDOM.nextInt(100) + 1));
 		}
 
-		Empresa melhor = hillClimbing(empresas, 3);
+		Empresa melhor = hillClimbing(empresas, 40);
 
 		// System.out.println("TODAS AS EMPRESAS: \n\n" + empresas.toString() + "\n\n");
 		System.out.println("EMPRESA COM MELHOR DESEMPENHO: \n\n" +
@@ -27,20 +27,34 @@ public class HillClimbing {
 
 	public static Empresa hillClimbing(List<Empresa> empresas, int pontoInicial) {
 		Empresa melhorEmpresa = empresas.get(pontoInicial);
-
+		int i = pontoInicial;
 		while (true) {
-			for (int i = pontoInicial; i < empresas.size(); i++) {
-				Empresa empresaAtual = empresas.get(i);				
-				if (isBetterThanNeighbors(empresaAtual, i == 0 ? null : empresas.get(i - 1),
-						i == empresas.size() - 1 ? null : empresas.get(i + 1))) {
-					melhorEmpresa = empresaAtual;
-				} else {
-					// método opcional para mostrar o gráfico
-					getGrafico(empresas, pontoInicial, i - 1);
-					return melhorEmpresa;
+			Empresa empresaAtual = empresas.get(i);
+			Empresa empresaAnterior = i > 0 ? empresas.get(i - 1) : null;
+			Empresa empresaPosterior = i < empresas.size() - 1 ? empresas.get(i + 1) : null;
+			if (isBetterThanNeighbors(empresaAtual, empresaAnterior, empresaPosterior)) {
+				melhorEmpresa = empresaAtual;
+			} else {
+				getGrafico(empresas, pontoInicial, i);
+				return melhorEmpresa;
+			}
+			if (empresaPosterior == null || empresaAtual.getDesempenho() >= empresaPosterior.getDesempenho()) {
+				while (empresaAnterior != null && empresaAtual.getDesempenho() < empresaAnterior.getDesempenho()) {
+					i--;
+					empresaAtual = empresas.get(i);
+					empresaAnterior = i > 0 ? empresas.get(i - 1) : null;
+					empresaPosterior = i < empresas.size() - 1 ? empresas.get(i + 1) : null;
+					if (isBetterThanNeighbors(empresaAtual, empresaAnterior, empresaPosterior)) {
+						melhorEmpresa = empresaAtual;
+					}
 				}
+				break;
+			} else {
+				i++;
 			}
 		}
+		getGrafico(empresas, pontoInicial, i);
+		return melhorEmpresa;
 	}
 
 	private static boolean isBetterThanNeighbors(Empresa empresaAtual, Empresa previous, Empresa next) {
