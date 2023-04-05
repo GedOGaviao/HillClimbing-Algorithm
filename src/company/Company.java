@@ -11,12 +11,16 @@ public class Company {
 
 	}
 
-	public double getPerformance() {
-		return 0.5 * attributes[0] + 0.3 * attributes[1] + 0.2 * attributes[2];
-	}
-
 	public String getName() {
 		return name;
+	}
+
+	public double[] getAttributes() {
+		return this.attributes;
+	}
+
+	public double getPerformance() {
+		return 0.5 * attributes[0] + 0.3 * attributes[1] + 0.2 * attributes[2];
 	}
 
 	@Override
