@@ -26,7 +26,7 @@ public class Main {
         print(empresas, PONTO_INICIAL, melhorHill, "HILL CLIMBING");
 
         // exibir SimulatedAnnealing
-        //print(empresas, PONTO_INICIAL, melhorSimulated, "SIMULATED ANNEALING");     
+        print(empresas, PONTO_INICIAL, melhorSimulated, "SIMULATED ANNEALING");     
 
     }
 
