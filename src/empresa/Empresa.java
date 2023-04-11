@@ -4,21 +4,15 @@ public class Empresa {
 
 	private String name;
 	private double[] atributos;
-	double receita;
 
 	public Empresa(String name, double receita, double lucro, double funcionarios) {
 		this.name = name;
-		this.receita = receita;
 		this.atributos = new double[] { receita, lucro, funcionarios };
 
 	}
 
 	public double getDesempenho() {
 		return 0.5 * atributos[0] + 0.3 * atributos[1] + 0.2 * atributos[2];
-	}
-	
-	public double getReceita() {
-		return receita;
 	}
 
 	public String getName() {
@@ -33,3 +27,4 @@ public class Empresa {
 
 	}
 }
+
